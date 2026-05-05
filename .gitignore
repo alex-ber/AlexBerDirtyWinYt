@@ -39,14 +39,14 @@ env/
 Thumbs.db
 
 # ----------------------------------
-# Local working folders (IMPORTANT)
+# Local working folders (FIXED)
 # ----------------------------------
-[downloaded]/
-[more]/
+downloaded/
+more/
 
 # ----------------------------------
-# Optional: ignore ffmpeg + yt-dlp binaries
-# (uncomment if you don't want them in repo)
+# Optional: ignore binaries entirely
+# (disable LFS usage if uncommented)
 # ----------------------------------
 # app/*.exe
 # app/*.dll
