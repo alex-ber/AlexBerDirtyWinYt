@@ -1,0 +1,52 @@
+# ----------------------------------
+# Audio artifacts (Whisper pipeline)
+# ----------------------------------
+*.wav
+*.mp3
+*.m4a
+*.flac
+
+# Chunked audio
+*part*.wav
+chunk_*.wav
+
+# ----------------------------------
+# Transcription outputs
+# ----------------------------------
+full_transcript.txt
+*.srt
+*.vtt
+*.json
+
+# ----------------------------------
+# Python artifacts
+# ----------------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# ----------------------------------
+# OS artifacts
+# ----------------------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------------------
+# Local working folders (IMPORTANT)
+# ----------------------------------
+[downloaded]/
+[more]/
+
+# ----------------------------------
+# Optional: ignore ffmpeg + yt-dlp binaries
+# (uncomment if you don't want them in repo)
+# ----------------------------------
+# app/*.exe
+# app/*.dll
