@@ -283,6 +283,9 @@ If you want, I can give you a clean GPU-enabled setup path—but only if you act
 
 ***
 
+Add to AlexBerUtils main.py?
+
+
 ### Solution The "Anchor File" Pattern (Absolute Determinism)
 
 Instead of asking Python *“Where does my code physically live?”* (to which Python constantly lies), we use an approach adopted today by `pytest`, `black`, `ruff`, and even `git`. We look for an **anchor** — a physical marker of the project root.
