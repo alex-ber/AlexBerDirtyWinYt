@@ -8,7 +8,7 @@ import re
 MODEL_NAME = "small"   # "small" = faster, "medium" = more accurate
 PATTERN = "*part*.wav"
 OUTPUT_FILE = "full_transcript.txt"
-LANGUAGE = "ru" #"en"
+LANGUAGE = "en" #"ru"
 # ------------------------
 
 #with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
