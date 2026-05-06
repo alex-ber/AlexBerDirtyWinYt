@@ -281,4 +281,40 @@ Bottom line:
 If you want, I can give you a clean GPU-enabled setup path—but only if you actually have an NVIDIA GPU worth using.
 
 
+***
+
+### Solution The "Anchor File" Pattern (Absolute Determinism)
+
+Instead of asking Python *“Where does my code physically live?”* (to which Python constantly lies), we use an approach adopted today by `pytest`, `black`, `ruff`, and even `git`. We look for an **anchor** — a physical marker of the project root.
+
+Your Dockerfile states: `# Strict mapping of uv.lock ensures absolute determinism.` That means `uv.lock` (or `pyproject.toml`) is our single source of truth.
+
+This code will reliably locate the project root regardless of how it’s executed (via `uv run`, `python -m`, from a nested directory, or through a bash script):
+
+```python
+import os
+from pathlib import Path
+
+def lock_cwd_to_project_root(anchor_file="uv.lock"):
+    """
+    Deterministic root discovery. No import magic, no __file__.
+    Relies solely on OS-level behavior and the filesystem.
+    """
+    # Start from the current working directory set by the calling process (Docker, uv, shell)
+    current_dir = Path.cwd().resolve()
+    
+    # Traverse upward through the directory tree searching for the anchor
+    for p in [current_dir] + list(current_dir.parents):
+        if (p / anchor_file).exists():
+            os.chdir(p)
+            # print(f"[HARDWARE_BRIDGE] CWD locked to: {p}")
+            return p
+            
+    # If we reach the filesystem root without finding uv.lock — this is a fatal environment violation
+    raise RuntimeError(f"FATAL: Anchor '{anchor_file}' not found. Macro-entropy leakage detected.")
+
+lock_cwd_to_project_root()
+```
+
+**Why this is best:** It does not depend on the Python major version, the module loader, or how the script was passed to the interpreter. Only filesystem-level system calls.
 	
