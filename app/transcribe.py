@@ -1,9 +1,16 @@
+# /// script
+# requires-python = ">=3.9"
+# dependencies = [
+#     "openai-whisper",
+# ]
+# ///
+
 import whisper
 import glob
 import os
 import re
 
-
+# PEP 723 - INLINE_MANIFEST
 # -------- CONFIG --------
 MODEL_NAME = "small"   # "small" = faster, "medium" = more accurate
 PATTERN = "*part*.wav"
@@ -75,3 +82,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+#uv run --system-certs transcribe.py
+
+#Native Bare Metal Ubuntu
+#sudo apt update && sudo apt install -y ffmpeg # ffmpeg acts as the base hardware driver 
+#curl -LsSf https://astral.sh/uv/install.sh | sh # Installing uv into an isolated user space (without sudo, without mutating the OS)
+#uv run transcribe.py
