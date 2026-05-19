@@ -12,7 +12,7 @@ import re
 
 # PEP 723 - INLINE_MANIFEST
 # -------- CONFIG --------
-MODEL_NAME = "small"   # "small" = faster, "medium" = more accurate
+MODEL_NAME = "medium"   # "small" = faster, "medium" = more accurate
 PATTERN = "*part*.wav"
 OUTPUT_FILE = "full_transcript.txt"
 LANGUAGE = "ru" #"en"
