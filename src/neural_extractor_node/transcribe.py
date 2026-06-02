@@ -125,7 +125,9 @@ if __name__ == "__main__":
 # Native Bare Metal Ubuntu (Ensure NVIDIA Proprietary Drivers + CUDA Toolkit are installed)
 # sudo apt update && sudo apt install -y ffmpeg
 # curl -LsSf https://astral.sh/uv/install.sh | sh
-# uv run python data/transcribe.py
+# uv run python "$(pwd)/src/neural_extractor_node/transcribe.py"
+# or inside "src/neural_extractor_node"
+# uv run python "transcribe.py"
 
 # Docker Execution (If running this inside the container built previously):
 # MUST pass the GPU flag to Docker to expose the hardware bridge:

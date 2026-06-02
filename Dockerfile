@@ -89,6 +89,12 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 # Transmit artifacts to WAN (PyPI):
 # uv publish
 
+#uv cache dir #~/.cache/uv
+#uv cache clean #completely wipe out cache
+#uv cache prune #outdated
+#uv cache clean numpy #If you suspect a specific package is corrupted or you want to force uv to redownload it, you can target it directly
+
+
 
 #docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.0
 #docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:latest
