@@ -75,6 +75,9 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 # To regenerate uv.lock WITHOUT installing uv on the Host OS, run this ephemeral hypervisor:
 # docker run --rm -v "$(pwd):/app" -w /app ghcr.io/astral-sh/uv:python3.12-bookworm-slim uv lock
 
+#If only source code was changed
+#docker build --progress=plain -t neural-extractor-node-i .
+
 #docker build --no-cache --progress=plain -t neural-extractor-node-i .
 # Note: Added `--gpus all` to mount the RTX 4060 Ti / CUDA 13.0 toolkit bridge
 #docker run -it --gpus all -v "$(pwd)/src/neural_extractor_node:/app/data" neural-extractor-node-i
