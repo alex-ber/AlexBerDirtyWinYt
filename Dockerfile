@@ -33,8 +33,8 @@ RUN set -ex && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates=20240203 \
-        nano=7.2-2ubuntu0.1 \
-        ffmpeg=7:6.1.1-3ubuntu5 \
+        nano \
+        ffmpeg \
     && rm -rf /var/lib/apt/lists/* \
     && apt-mark hold ca-certificates nano ffmpeg \
     # Extra strict pinning: prevent newer versions even if they appear in repositories
@@ -57,7 +57,7 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/neural_extractor_node && \
-    echo '__version__ = "0.1.0"' > src/neural_extractor_node/__init__.py && \
+    echo '__version__ = "0.1.1"' > src/neural_extractor_node/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Mount Root Logic
@@ -96,12 +96,13 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 #uv cache clean #completely wipe out cache
 #uv cache prune #outdated
 #uv cache clean numpy #If you suspect a specific package is corrupted or you want to force uv to redownload it, you can target it directly
+#sudo  ~/.local/bin/uv sync
+#sudo ~/.local/bin/uv run python -m src.neural_extractor_node.transcribe
 
 
-
-#docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.0
+#docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.1
 #docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:latest
-#docker push alexberkovich/neural-extractor-node:0.1.0
+#docker push alexberkovich/neural-extractor-node:0.1.1
 #docker push alexberkovich/neural-extractor-node:latest
 
 

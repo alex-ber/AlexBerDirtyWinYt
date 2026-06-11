@@ -30,7 +30,7 @@ import torch
 
 # -------- CONFIG & HARDWARE --------
 MODEL_NAME = "medium"   # "small" = faster, "medium" = more accurate
-LANGUAGE = "ru" #"en"
+LANGUAGE = "en" #"ru"
 
 # --- HYBRID PATH DISCOVERY ---
 def get_data_dir():
