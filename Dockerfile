@@ -96,8 +96,8 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 #uv cache clean #completely wipe out cache
 #uv cache prune #outdated
 #uv cache clean numpy #If you suspect a specific package is corrupted or you want to force uv to redownload it, you can target it directly
-#sudo  ~/.local/bin/uv sync
-#sudo ~/.local/bin/uv run python -m src.neural_extractor_node.transcribe
+#sudo -E env PATH="$PATH" uv sync
+#sudo -E env PATH="$PATH" uv run python -m src.neural_extractor_node.transcribe
 
 
 #docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.1
