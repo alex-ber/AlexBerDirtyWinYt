@@ -92,6 +92,8 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 # Transmit artifacts to WAN (PyPI):
 # uv publish
 
+#mise use uv@0.11.17
+#sudo -E env PATH="$PATH" uv
 #uv cache dir #~/.cache/uv
 #uv cache clean #completely wipe out cache
 #uv cache prune #outdated
