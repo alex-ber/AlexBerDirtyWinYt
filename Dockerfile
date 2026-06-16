@@ -1,47 +1,30 @@
-#[DECOHERENCE_BOUNDARY]: Ubuntu Base (Size Limit: IGNORED)
-# Absolute Phase Lock. Pointer tags (e.g., :24.04) are PROHIBITED.
-# docker pull ubuntu:24.04
-# docker inspect --format='{{index .RepoDigests 0}}' ubuntu:24.04
-# Retrieve the current pointer for UV:
-# docker pull ghcr.io/astral-sh/uv:latest
-# docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/astral-sh/uv:latest
-# docker run --rm ubuntu:24.04 bash -c "apt-get update > /dev/null && apt-cache policy ca-certificates"
+FROM alexberkovich/ubuntu2404-snapshot:2025-06-16
 
-FROM ubuntu@sha256:c4a8d5503dfb2a3eb8ab5f807da5bc69a85730fb49b5cfca2330194ebcc41c7b
 
 #[HARDWARE_CONFIG]: Deterministic execution and compilation flags
+# Consolidated environment variables to reduce layer allocation overhead.
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     LANG=C.UTF-8 \
     PYTHONDONTWRITEBYTECODE=1 \
+    UV_CACHE_DIR=/tmp/.uv-cache \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
-    UV_PROJECT_ENVIRONMENT="/opt/venv" \
-    PATH="/opt/venv/bin:$PATH"
+    UV_PYTHON_INSTALL_DIR=/opt/python
 
 WORKDIR /app
 
-#[HARDWARE_BRIDGE]: Injecting UV Compiler (AOT Dependency Graph Resolver)
-COPY --from=ghcr.io/astral-sh/uv@sha256:3a59a3cdd5f7c217faa36e32dbc7fddbb0412889c2a0a5229f6d790e5a019dd7 /uv /uvx /bin/
 
+#[HARDWARE_BRIDGE]: Injecting UV Compiler (AOT Dependency Graph Resolver)
+COPY --from=ghcr.io/astral-sh/uv@sha256:ff07b86af50d4d9391d9daf4ff89ce427bc544f9aae87057e69a1cc0aa369946 /uv /uvx /bin/
 
 
 #[RUNTIME_ENVIRONMENT]: Deterministic APT Projection & Root Python Allocation
-# Hard package pinning for maximum reproducibility.
-# ca-certificates pinned to exact version + hold + preferences to prevent ANY upgrade.
 RUN set -ex && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        ca-certificates=20240203 \
         nano \
         ffmpeg \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-mark hold ca-certificates nano ffmpeg \
-    # Extra strict pinning: prevent newer versions even if they appear in repositories
-    && echo 'Package: ca-certificates' > /etc/apt/preferences.d/ca-certificates-pin \
-    && echo 'Pin: version 20240203' >> /etc/apt/preferences.d/ca-certificates-pin \
-    && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/ca-certificates-pin \
-    && update-ca-certificates --fresh \
     && rm -rf /var/lib/apt/lists/* \
     # STRICT LOCK: TOML requires >=3.11, <=3.12 (Crucial for torch 2.12.0 + cu130 compatibility)
     && uv python install 3.12.3
@@ -57,7 +40,7 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/neural_extractor_node && \
-    echo '__version__ = "0.1.1"' > src/neural_extractor_node/__init__.py && \
+    echo '__version__ = "0.1.3"' > src/neural_extractor_node/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Mount Root Logic
@@ -65,12 +48,16 @@ COPY src/ src/
 
 #[PROJECT_INJECTION]: Finalize Symbol Table Linkage
 RUN set -ex && \
-    uv sync
+    uv sync && \
+    chmod -R 777 /app/.venv && \
+    chmod -R 755 /opt/python
 
 #[ENTRYPOINT]: Hardware Transition (Main Thread Execution)
 CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 
 
+#mise prune
+#mise install
 # ---[STATELESS BIRUR DAEMON] ---
 # To regenerate uv.lock WITHOUT installing uv on the Host OS, run this ephemeral hypervisor:
 # docker run --rm -v "$(pwd):/app" -w /app ghcr.io/astral-sh/uv:python3.12-bookworm-slim uv lock
@@ -85,6 +72,8 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 # You get a Linux command line INSIDE the container.
 #docker run -it --gpus all --entrypoint /bin/bash -v "$(pwd)/src/neural_extractor_node:/app/data" neural-extractor-node-i
 
+
+
 # ---[PyPI PUBLISHING PIPELINE] ---
 # uv build
 # Allocate token in RAM (Replace YOUR_TOKEN):
@@ -92,9 +81,6 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 # Transmit artifacts to WAN (PyPI):
 # uv publish
 
-#mise prune
-#mise install
-#mise use uv@0.11.17
 #sudo -E env PATH="$PATH" uv
 #uv cache dir #~/.cache/uv
 #uv cache clean #completely wipe out cache
@@ -104,9 +90,9 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 #sudo -E env PATH="$PATH" uv run python -m src.neural_extractor_node.transcribe
 
 
-#docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.1
+#docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.3
 #docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:latest
-#docker push alexberkovich/neural-extractor-node:0.1.1
+#docker push alexberkovich/neural-extractor-node:0.1.3
 #docker push alexberkovich/neural-extractor-node:latest
 
 
@@ -132,9 +118,14 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 # docker builder du
 
 # https://gallery.ecr.aws/lambda/python/
-# docker system prune --all
+# docker volume ls
+# docker volume ls -q > volumes-to-delete.txt
+# Review volumes-to-delete.txt and delete only anonymous or never be used one.
+# xargs -r docker volume rm < volumes-to-delete.txt
+## docker system prune --all
 # docker rm -f neural-extractor-node
 # docker rmi -f neural-extractor-node-i
+
 
 # docker build --no-cache . -t neural-extractor-node-i
 # docker build --no-cache --progress=plain . -t neural-extractor-node-i

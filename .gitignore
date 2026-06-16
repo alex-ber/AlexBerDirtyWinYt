@@ -1,4 +1,48 @@
 # ----------------------------------
+# Environments (CRITICAL)
+# ----------------------------------
+.env
+.env.*
+.venv*
+venv*
+env/
+ENV/
+env.bak/
+virtualenv/
+node_modules/
+
+# ----------------------------------
+# Secrets (CRITICAL)
+# ----------------------------------
+.secrets/
+credentials.json
+*.pem
+*.key
+
+# ----------------------------------
+# Python Artifacts
+# ----------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ----------------------------------
+# Packaging / build
+# ----------------------------------
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+*.tar.gz
+
+# ----------------------------------
+# Logs
+# ----------------------------------
+*.log
+
+# ----------------------------------
 # Audio artifacts (Whisper pipeline)
 # ----------------------------------
 *.wav
@@ -19,30 +63,39 @@ full_transcript.txt
 *.json
 
 # ----------------------------------
-# Python artifacts
+# Data artifacts
 # ----------------------------------
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.log
-
-# Virtual environments
-.venv/
-venv/
-env/
+*.pkl
+*.bin
+.ipynb_checkpoints/
 
 # ----------------------------------
-# OS artifacts
+# IDE / OS noise
 # ----------------------------------
+.idea/
+.vscode/
+*.kdev4
 .DS_Store
 Thumbs.db
+*~
+*.swp
+*.swo
 
 # ----------------------------------
-# Local working folders (FIXED)
+# Testing / tooling
+# ----------------------------------
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ----------------------------------
+# Local working folders / scratch
 # ----------------------------------
 downloaded/
-
+prof/
+scratch/
 
 # ----------------------------------
 # Optional: ignore binaries entirely
@@ -50,3 +103,9 @@ downloaded/
 # ----------------------------------
 # app/*.exe
 # app/*.dll
+
+# ----------------------------------
+# Allow scripts explicitly
+# ----------------------------------
+!*.bat
+!*.sh

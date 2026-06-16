@@ -1,9 +1,4 @@
 # ----------------------------------
-# Default: normalize to LF (Linux/Docker safe)
-# ----------------------------------
-* text=auto eol=lf
-
-# ----------------------------------
 # Windows scripts (CRLF required)
 # ----------------------------------
 *.bat text eol=crlf
@@ -11,16 +6,17 @@
 *.ps1 text eol=crlf
 
 # ----------------------------------
-# Code / scripts (LF required)
+# Code / Shell scripts (LF required)
 # ----------------------------------
-*.py text eol=lf
 *.sh text eol=lf
+*.py text eol=lf
 
 # ----------------------------------
-# Text / config (LF)
+# Text / Config / Explicit text (LF)
 # ----------------------------------
 *.txt   text eol=lf
 *.md    text eol=lf
+*.toml  text eol=lf
 *.json  text eol=lf
 *.yml   text eol=lf
 *.yaml  text eol=lf
@@ -31,27 +27,39 @@
 # ----------------------------------
 # Docker (must be LF)
 # ----------------------------------
-Dockerfile text eol=lf
-*.dockerfile text eol=lf
+Dockerfile    text eol=lf
+*.dockerfile  text eol=lf
 .dockerignore text eol=lf
 
 # ----------------------------------
-# Binary files (never normalized)
+# Binary (never normalized or diffed)
 # ----------------------------------
-*.exe -text
-*.dll -text
-*.zip -text
-*.7z  -text
-*.tar -text
-*.gz  -text
+# Executables & Libraries
+*.exe binary
+*.dll binary
+*.so  binary
 
-*.wav -text
-*.mp3 -text
-*.flac -text
-*.m4a -text
+# Images
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
 
-*.db -text
-*.sqlite -text
+# Audio
+*.wav  binary
+*.mp3  binary
+*.flac binary
+*.m4a  binary
+
+# Archives
+*.zip binary
+*.7z  binary
+*.tar binary
+*.gz  binary
+
+# Databases
+*.db     binary
+*.sqlite binary
 
 # ----------------------------------
 # Git LFS (large Windows binaries)

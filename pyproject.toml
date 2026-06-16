@@ -1,6 +1,6 @@
 [project]
 name = "neural-extractor-node"
-version = "0.1.1"
+version = "0.1.3"
 description = "Deterministic Whisper Pipeline"
 # STRICT LOCK: Force Python 3.11/3.12 for CUDA compatibility
 requires-python = ">=3.11, <=3.12"
