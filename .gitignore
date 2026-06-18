@@ -109,3 +109,5 @@ scratch/
 # ----------------------------------
 !*.bat
 !*.sh
+
+src/neural_extractor_node/__init__.py
