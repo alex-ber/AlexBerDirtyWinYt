@@ -73,7 +73,7 @@ full_transcript.txt
 # IDE / OS noise
 # ----------------------------------
 .idea/
-.vscode/
+#.vscode/
 *.kdev4
 .DS_Store
 Thumbs.db

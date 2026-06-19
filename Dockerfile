@@ -54,7 +54,7 @@ RUN set -ex && \
 
 #[ENTRYPOINT]: Hardware Transition (Main Thread Execution)
 CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
-
+##CMD ["sleep", "infinity"]
 
 #mise prune
 #mise install
