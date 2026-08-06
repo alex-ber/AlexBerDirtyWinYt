@@ -1,4 +1,4 @@
-FROM alexberkovich/ubuntu2404-snapshot:2025-06-16
+FROM alexberkovich/ubuntu2404-snapshot:2026-08-06
 
 
 #[HARDWARE_CONFIG]: Deterministic execution and compilation flags
@@ -16,8 +16,8 @@ WORKDIR /app
 
 
 #[HARDWARE_BRIDGE]: Injecting UV Compiler (AOT Dependency Graph Resolver)
-COPY --from=ghcr.io/astral-sh/uv@sha256:ff07b86af50d4d9391d9daf4ff89ce427bc544f9aae87057e69a1cc0aa369946 /uv /uvx /bin/
-
+#https://github.com/astral-sh/uv/pkgs/container/uv/1073952945?tag=0.11.33-python3.12-trixie
+COPY --from=ghcr.io/astral-sh/uv:0.11.33@sha256:77280f2f771df71f90786c314fe1bbc1e023feac652969bbf139c280babf2eb7 /uv /uvx /bin/
 
 #[RUNTIME_ENVIRONMENT]: Deterministic APT Projection & Root Python Allocation
 RUN set -ex && \
@@ -27,7 +27,7 @@ RUN set -ex && \
         ffmpeg \
     && rm -rf /var/lib/apt/lists/* \
     # STRICT LOCK: TOML requires >=3.11, <=3.12 (Crucial for torch 2.12.0 + cu130 compatibility)
-    && uv python install 3.12.3
+    && uv python install 3.12.10
 
 
 
@@ -40,7 +40,7 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/neural_extractor_node && \
-    echo '__version__ = "0.1.3"' > src/neural_extractor_node/__init__.py && \
+    echo '__version__ = "0.1.4"' > src/neural_extractor_node/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Mount Root Logic
@@ -90,9 +90,9 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 #sudo -E env PATH="$PATH" uv run python -m src.neural_extractor_node.transcribe
 
 
-#docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.3
+#docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.4
 #docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:latest
-#docker push alexberkovich/neural-extractor-node:0.1.3
+#docker push alexberkovich/neural-extractor-node:0.1.4
 #docker push alexberkovich/neural-extractor-node:latest
 
 
