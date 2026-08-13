@@ -1,6 +1,10 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "neural-extractor-node"
-version = "0.1.4"
+dynamic =["version"]
 description = "Deterministic Whisper Pipeline"
 # STRICT LOCK: Force Python 3.11/3.12 for CUDA compatibility
 requires-python = ">=3.11, <=3.12"
@@ -23,5 +27,9 @@ name = "pytorch-cu130"
 url = "https://download.pytorch.org/whl/cu130"
 explicit = true
 
-[tool.uv]
-preview = true
+# [POINTER_ALLOCATION]: Directing the transpiler to the isolated OR
+[tool.hatch.build.targets.wheel]
+packages =["src/neural_extractor_node"]
+
+[tool.hatch.version]
+path = "src/neural_extractor_node/__init__.py"

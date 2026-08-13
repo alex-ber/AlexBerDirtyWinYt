@@ -1,4 +1,4 @@
-FROM alexberkovich/ubuntu2404-snapshot:2026-08-06
+FROM alexberkovich/ubuntu2404-snapshot:2026-08-12
 
 
 #[HARDWARE_CONFIG]: Deterministic execution and compilation flags
@@ -40,7 +40,7 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/neural_extractor_node && \
-    echo '__version__ = "0.1.4"' > src/neural_extractor_node/__init__.py && \
+    echo '__version__ = "0.1.7"' > src/neural_extractor_node/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Mount Root Logic
@@ -53,7 +53,7 @@ RUN set -ex && \
     chmod -R 755 /opt/python
 
 #[ENTRYPOINT]: Hardware Transition (Main Thread Execution)
-CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
+CMD ["uv", "run", "python", "-m", "neural_extractor_node.transcribe"]
 ##CMD ["sleep", "infinity"]
 
 #mise prune
@@ -87,12 +87,12 @@ CMD ["uv", "run", "python", "-m", "src.neural_extractor_node.transcribe"]
 #uv cache prune #outdated
 #uv cache clean numpy #If you suspect a specific package is corrupted or you want to force uv to redownload it, you can target it directly
 #sudo -E env PATH="$PATH" uv sync
-#sudo -E env PATH="$PATH" uv run python -m src.neural_extractor_node.transcribe
+#sudo -E env PATH="$PATH" uv run python -m neural_extractor_node.transcribe
 
 
-#docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.4
+#docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.7
 #docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:latest
-#docker push alexberkovich/neural-extractor-node:0.1.4
+#docker push alexberkovich/neural-extractor-node:0.1.7
 #docker push alexberkovich/neural-extractor-node:latest
 
 

@@ -237,8 +237,7 @@ wheels = [
 
 [[package]]
 name = "neural-extractor-node"
-version = "0.1.4"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "openai-whisper" },
     { name = "torch" },
