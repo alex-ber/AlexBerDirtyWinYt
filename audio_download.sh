@@ -8,6 +8,9 @@ echo "[SYSTEM]: Initiating Audio Stream Extraction (MP3)..."
 
 yt-dlp \
   --js-runtimes node \
+  --verbose \
+  -f bestaudio \
+  --cookies "cookies.txt" \
   --batch-file "download.txt" \
   --output "downloaded/%(title)s.%(ext)s" \
   --ignore-errors \
@@ -16,5 +19,6 @@ yt-dlp \
   --extract-audio \
   --audio-format "mp3" \
   --audio-quality 0
+
 
 echo "[ACK]: Audio phase successfully extracted."

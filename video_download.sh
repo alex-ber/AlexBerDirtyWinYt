@@ -6,8 +6,11 @@ mkdir -p downloaded
 
 echo "[SYSTEM]: Initiating Video Stream Capture..."
 
+
 yt-dlp \
   --js-runtimes node \
+  --verbose \
+  --cookies "cookies.txt" \
   --batch-file "download.txt" \
   --output "downloaded/%(title)s.%(ext)s" \
   --ignore-errors \
