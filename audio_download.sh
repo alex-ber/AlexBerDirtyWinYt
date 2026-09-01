@@ -9,7 +9,6 @@ echo "[SYSTEM]: Initiating Audio Stream Extraction (MP3)..."
 yt-dlp \
   --js-runtimes node \
   --verbose \
-  -f bestaudio \
   --cookies "cookies.txt" \
   --batch-file "download.txt" \
   --output "downloaded/%(title)s.%(ext)s" \
