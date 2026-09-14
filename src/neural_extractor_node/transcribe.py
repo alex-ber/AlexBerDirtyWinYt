@@ -1,24 +1,23 @@
 # /// script
-# # STRICT LOCK: Capped at 3.12. Python 3.13+ (PEP 667) breaks Whisper's setup.py read_version() via locals() KeyError.
+# # STRICT LOCK: Force Python 3.11/3.12 for CUDA compatibility
 # requires-python = ">=3.11, <=3.12"
 # dependencies = [
-#     "openai-whisper==20240930",
-#     "torch==2.12.0",
-# # Whisper doesn't actually need torchaudio, because torchaudio==2.12.0 wasn't released, we're just dropping it out.
+#     # STRICT LOCK: Stable base vector (date-based versioning)
+#     "openai-whisper==20250625", #20240930
+#     # STRICT LOCK: Pinning the phase-space volume for CUDA 13.0 / Blackwell (prevents ABI failures)
+#     "torch==2.12.0", #2.12.0+cu130
+#     # torchaudio dropped: 2.12.0 wasn't released and Whisper extracts audio via ffmpeg natively
 # ]
 #
 # [tool.uv.sources]
-# # HARDWARE BRIDGE: Routes the engine downloads to the CUDA 13.0 binaries (Blackwell sm_120 support)
+# # Direct PyTorch to utilize the CUDA 13.0 index (RTX 5070 Ti / sm_120)
 # torch = { index = "pytorch-cu130" }
+# #torchaudio = { index = "pytorch-cu130" }
 #
 # [[tool.uv.index]]
 # name = "pytorch-cu130"
 # url = "https://download.pytorch.org/whl/cu130"
 # explicit = true
-#
-# [tool.uv.extra-build-dependencies]
-# # STRICT LOCK: OpenAI's setup.py still relies on pkg_resources, requiring legacy setuptools to build
-# openai-whisper = ["setuptools<81"]
 # ///
 
 import whisper
@@ -38,13 +37,13 @@ def get_data_dir():
     # Priority 2: '.' (Native: User is running from inside the neural_extractor_node folder)
     # Priority 3: 'src/neural_extractor_node' (Native: User is running from the project root)
     for candidate in ["data", ".", "src/neural_extractor_node"]:
-        if glob.glob(os.path.join(candidate, "*part*.wav")):
+        if glob.glob(os.path.join(candidate, "*part*.*")):
             return candidate
     return "." # Fallback if nothing is found
 
 BASE_DIR = get_data_dir()
 
-PATTERN = os.path.join(BASE_DIR, "*part*.wav")
+PATTERN = os.path.join(BASE_DIR, "*part*.*")
 OUTPUT_FILE = os.path.join(BASE_DIR, "full_transcript.txt")
 # -----------------------------------
 
