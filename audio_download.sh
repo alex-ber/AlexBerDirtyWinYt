@@ -7,7 +7,7 @@ mkdir -p downloaded
 echo "[SYSTEM]: Initiating Audio Stream Extraction (MP3)..."
 
 yt-dlp \
-  --js-runtimes node \
+  --js-runtimes deno \
   --verbose \
   --cookies "cookies.txt" \
   --batch-file "download.txt" \

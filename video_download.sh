@@ -8,7 +8,7 @@ echo "[SYSTEM]: Initiating Video Stream Capture..."
 
 
 yt-dlp \
-  --js-runtimes node \
+  --js-runtimes deno \
   --verbose \
   --cookies "cookies.txt" \
   --batch-file "download.txt" \
