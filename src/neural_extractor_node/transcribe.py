@@ -53,7 +53,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # -----------------------------------
 
 def extract_part_number(filename):
-    match = re.search(r'part(\d+)', filename)
+    match = re.search(r'part[- _]?(\d+)', filename, re.IGNORECASE)
     return int(match.group(1)) if match else 0
 
 def main():
