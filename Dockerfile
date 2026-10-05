@@ -1,4 +1,4 @@
-FROM alexberkovich/ubuntu2404-snapshot:2026-09-16
+FROM alexberkovich/ubuntu2404-snapshot:2026-10-05
 
 
 #[HARDWARE_CONFIG]: Deterministic execution and compilation flags
@@ -40,7 +40,7 @@ COPY pyproject.toml uv.lock ./
 # Bypasses hatchling early parse exception, isolating dependency layer from source layer jitter.
 RUN set -ex && \
     mkdir -p src/neural_extractor_node && \
-    echo '__version__ = "0.1.7"' > src/neural_extractor_node/__init__.py && \
+    echo '__version__ = "0.1.8"' > src/neural_extractor_node/__init__.py && \
     uv sync --no-install-project
 
 #[AST_COPY]: Mount Root Logic
@@ -56,6 +56,7 @@ RUN set -ex && \
 CMD ["uv", "run", "python", "-m", "neural_extractor_node.transcribe"]
 ##CMD ["sleep", "infinity"]
 
+
 #mise prune
 #mise install
 # ---[STATELESS BIRUR DAEMON] ---
@@ -66,11 +67,11 @@ CMD ["uv", "run", "python", "-m", "neural_extractor_node.transcribe"]
 #docker build --progress=plain -t neural-extractor-node-i .
 
 #docker build --no-cache --progress=plain -t neural-extractor-node-i .
-# Note: Added `--gpus all` to mount the RTX 4060 Ti / CUDA 13.0 toolkit bridge
-#docker run -it --gpus all -v "$(pwd)/src/neural_extractor_node:/app/data" neural-extractor-node-i
+#Note: Added `--gpus all` to mount the RTX 5070 Ti (Blackwell) / CUDA 13.0 toolkit bridge
+#docker run -it --gpus all -v "$(pwd)/data/app/data" neural-extractor-node-i
 # The --entrypoint /bin/bash flag overrides the default script execution.
 # You get a Linux command line INSIDE the container.
-#docker run -it --gpus all --entrypoint /bin/bash -v "$(pwd)/src/neural_extractor_node:/app/data" neural-extractor-node-i
+#docker run -it --gpus all --entrypoint /bin/bash -v "$(pwd)/data:/app/data" neural-extractor-node-i
 
 
 
@@ -90,12 +91,12 @@ CMD ["uv", "run", "python", "-m", "neural_extractor_node.transcribe"]
 #sudo -E env PATH="$PATH" uv run python -m neural_extractor_node.transcribe
 
 
-#docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.7
+#docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:0.1.8
 #docker tag neural-extractor-node-i alexberkovich/neural-extractor-node:latest
-#docker push alexberkovich/neural-extractor-node:0.1.7
+#docker push alexberkovich/neural-extractor-node:0.1.8
 #docker push alexberkovich/neural-extractor-node:latest
 
-
+##docker system prune --all
 # Delete all containers
 # docker rm -f $(docker ps -a -q)
 

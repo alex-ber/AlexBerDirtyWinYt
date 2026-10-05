@@ -1,8 +1,8 @@
 @echo off
-REM [EMET_LOCK]: High-Fidelity Video Fetcher
+:: [EMET_LOCK]: High-Fidelity Video Fetcher
 
-REM Create buffer directory if it does not exist
-if not exist "downloaded" mkdir "downloaded"
+REM Set the working directory to the script's location
+cd /d "%~dp0" || exit /b 1
 
 echo [SYSTEM]: Initiating Video Stream Capture...
 
@@ -16,8 +16,8 @@ call app\yt.bat ^
   --js-runtimes deno ^
   --verbose ^
   --cookies "cookies.txt" ^
-  --batch-file "download.txt" ^
-  --output "downloaded\%%(title)s.%%(ext)s" ^
+  --batch-file "./download.txt" ^
+  --output "%%(title)s.%%(ext)s" ^
   --ignore-errors ^
   --no-check-certificates ^
   --no-playlist ^

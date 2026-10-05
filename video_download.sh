@@ -1,8 +1,8 @@
 #!/bin/bash
 #[EMET_LOCK]: High-Fidelity Video Fetcher
 
-# Create buffer directory if it does not exist
-mkdir -p downloaded
+TARGET_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+cd "$TARGET_DIR" || exit 1
 
 echo "[SYSTEM]: Initiating Video Stream Capture..."
 
@@ -11,8 +11,8 @@ yt-dlp \
   --js-runtimes deno \
   --verbose \
   --cookies "cookies.txt" \
-  --batch-file "download.txt" \
-  --output "downloaded/%(title)s.%(ext)s" \
+  --batch-file "./download.txt" \
+  --output "%(title)s.%(ext)s" \
   --ignore-errors \
   --no-check-certificates \
   --no-playlist \

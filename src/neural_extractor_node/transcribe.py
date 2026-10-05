@@ -28,8 +28,13 @@ import torch
 
 
 # -------- CONFIG & HARDWARE --------
-MODEL_NAME = "medium"   # "small" = faster, "medium" = more accurate
+# "small" = faster, "medium" = more accurate
+# "large-v3" is highly accurate and consumes ~3.5GB VRAM in FP16, perfectly fitting the 16GB RTX 5070 Ti.
+MODEL_NAME = "large-v3"
 LANGUAGE = "en" #"ru"
+
+SUPPORTED_EXTENSIONS = ["*.webm", "*.m4a", "*.mp4", "*.mp3", "*.mkv", "*.opus"]
+
 
 # --- HYBRID PATH DISCOVERY ---
 def get_data_dir():
@@ -37,13 +42,13 @@ def get_data_dir():
     # Priority 2: '.' (Native: User is running from inside the neural_extractor_node folder)
     # Priority 3: 'src/neural_extractor_node' (Native: User is running from the project root)
     for candidate in ["data", ".", "src/neural_extractor_node"]:
-        if glob.glob(os.path.join(candidate, "*part*.*")):
-            return candidate
+        # Scanning for full video/audio streams, not just "part" files
+        for ext in SUPPORTED_EXTENSIONS:
+            if glob.glob(os.path.join(candidate, ext)):
+                return candidate
     return "." # Fallback if nothing is found
 
 BASE_DIR = get_data_dir()
-
-PATTERN = os.path.join(BASE_DIR, "*part*.*")
 OUTPUT_FILE = os.path.join(BASE_DIR, "full_transcript.txt")
 # -----------------------------------
 
@@ -53,8 +58,20 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # -----------------------------------
 
 def extract_part_number(filename):
+    """
+    Sorts chunked files (e.g., part-1, part-2) if they exist.
+    Returns 0 for whole video files, falling back to alphabetical sorting.
+    """
     match = re.search(r'part[- _]?(\d+)', filename, re.IGNORECASE)
     return int(match.group(1)) if match else 0
+
+def get_media_files(base_dir):
+    """Aggregates all supported media streams."""
+    files = []
+    for ext in SUPPORTED_EXTENSIONS:
+        files.extend(glob.glob(os.path.join(base_dir, ext)))
+    # Sort primarily by part number (if applicable), then alphabetically
+    return sorted(files, key=lambda x: (extract_part_number(x), x))
 
 def main():
     print(f"\n[SYSTEM] Target Hardware: {DEVICE.upper()}")
@@ -63,7 +80,7 @@ def main():
         gpu_name = torch.cuda.get_device_name(0)
         print(f"[SYSTEM] GPU Detected: {gpu_name}")
 
-        # Hardware optimization for RTX 30/40 series (Ampere/Ada architectures)
+        # Hardware optimization for RTX 30/40/50 series (Ampere/Ada/Blackwell architectures)
         # Allows PyTorch to use TensorFloat32 for massive matrix math speedups
         torch.backends.cuda.matmul.allow_tf32 = True
 
@@ -71,15 +88,14 @@ def main():
     # Explicitly map model into GPU memory
     model = whisper.load_model(MODEL_NAME, device=DEVICE)
 
-    files = glob.glob(PATTERN)
-    files = sorted(files, key=extract_part_number)
+    files = get_media_files(BASE_DIR)
 
     print("\nMatched files:")
     for f in files:
         print(f)
 
     if not files:
-        print("\nNo files found. Check filename pattern.")
+        print("\nNo files found. Check your downloaded directory.")
         return
 
     print(f"\nFound {len(files)} files\n")
@@ -97,10 +113,12 @@ def main():
                     # fp16=True (CUDA) drastically speeds up inference & cuts VRAM usage by 50%
                     # fp16=False (CPU) prevents float16 warnings/crashes when running on base CPU
                     fp16=(DEVICE == "cuda"),
-                    verbose=True
+                    # condition_on_previous_text=False prevents hallucinations (infinite phrase looping on silence)
+                    condition_on_previous_text=False,
+                    verbose=True # Streams the transcription segments to the console in real-time
                 )
 
-                # Always build from segments
+                # Always build the final text from the transcribed segments
                 text = " ".join(seg["text"].strip() for seg in result["segments"])
 
                 print(f"Finished: {file} | chars: {len(text)}")
@@ -121,7 +139,8 @@ if __name__ == "__main__":
 
 # --- EXECUTION INSTRUCTIONS ---
 
-# Native Bare Metal Ubuntu (Ensure NVIDIA Proprietary Drivers + CUDA Toolkit are installed)
+
+# Native Bare Metal Ubuntu (Ensure NVIDIA Proprietary Drivers are installed)
 # sudo apt update && sudo apt install -y ffmpeg
 # curl -LsSf https://astral.sh/uv/install.sh | sh
 # uv run python "$(pwd)/src/neural_extractor_node/transcribe.py"
