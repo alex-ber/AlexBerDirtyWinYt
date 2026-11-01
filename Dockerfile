@@ -1,5 +1,4 @@
-FROM alexberkovich/ubuntu2404-snapshot:2026-10-05
-
+FROM alexberkovich/ubuntu2404-snapshot:2026-10-26
 
 #[HARDWARE_CONFIG]: Deterministic execution and compilation flags
 # Consolidated environment variables to reduce layer allocation overhead.
@@ -17,7 +16,7 @@ WORKDIR /app
 
 #[HARDWARE_BRIDGE]: Injecting UV Compiler (AOT Dependency Graph Resolver)
 #https://github.com/astral-sh/uv/pkgs/container/uv/1073952945?tag=0.11.33-python3.12-trixie
-COPY --from=ghcr.io/astral-sh/uv:0.11.33@sha256:77280f2f771df71f90786c314fe1bbc1e023feac652969bbf139c280babf2eb7 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.4@sha256:77280f2f771df71f90786c314fe1bbc1e023feac652969bbf139c280babf2eb7 /uv /uvx /bin/
 
 #[RUNTIME_ENVIRONMENT]: Deterministic APT Projection & Root Python Allocation
 RUN set -ex && \

@@ -1,5 +1,7 @@
 [tools]
-deno = "2.9.6"
-uv = "0.11.33"
+deno = "2.9.6"   # You can keep it as long as it works
+#bun = "1.2.0"    # Adding Bun (if you want to use it)
+#node = "22.14.0" # Adding Node.js (specify the desired version, e.g. "lts" or a specific one)
+uv = "0.13.4"
 python = "3.12.10"
 
