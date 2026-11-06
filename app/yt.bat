@@ -1,5 +1,6 @@
 @echo off
 
+set "PATH=%~dp0;%PATH%"
 cd /D "%~dp0..\"
 
 for /f "delims=" %%i in ('app\yt-dlp.exe --version') do set version=%%i

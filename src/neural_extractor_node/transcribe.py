@@ -31,7 +31,7 @@ import torch
 # "small" = faster, "medium" = more accurate
 # "large-v3" is highly accurate and consumes ~3.5GB VRAM in FP16, perfectly fitting the 16GB RTX 5070 Ti.
 MODEL_NAME = "large-v3"
-LANGUAGE = "ru" #"ru" #en
+LANGUAGE = "en" #"ru" #en
 
 SUPPORTED_EXTENSIONS = ["*.webm", "*.m4a", "*.mp4", "*.mp3", "*.mkv", "*.opus"]
 
